@@ -1,68 +1,82 @@
+import random
+
 import tools
 import numpy
 from scipy.optimize import linear_sum_assignment
 
 
-def gen_p_matrix(size: int, sugar_divider: int,
-                 min_start_sugar: float, max_start_sugar: float,
-                 min_sugaring: float, max_sugaring: float,
-                 min_degradation: float, max_degradation: float):
-    """Возвращает матрицу P для решения задачи оптимизации, используя заданные интервалы разброса начальных условий.\n
-    size - размер матрицы P, sugar_divider - знаменатель дроби дозаривания (если = 2, то дозаривание будет 1/2 и т.п)\n
+def gen_z_matrix(size: int, min_start_sugar: float, max_start_sugar: float,
+                 min_degradation: float, max_degradation: float,
+                 min_k: float, max_k: float,
+                 min_na: float, max_na: float,
+                 min_an: float, max_an: float):
+    """Возвращает матрицу Z для решения задачи оптимизации, используя заданные интервалы разброса начальных условий.\n
+    size - размер матрицы P\n
     min_start_sugar, max_start_sugar - интервал разброса стартовых значений сахаристости (должны быть от 0 до 1!)\n
-    min_sugaring, max_sugaring - интервал разброса значений увеличения сахаристости на этапах дозаривания (должны быть больше 1!)
-    min_degradation, max_degradation - коэффициенты деградации будут от min_degradation до max_degradation (должны быть от 0 до 1!)."""
+    min_degradation, max_degradation - коэффициенты деградации будут от min_degradation до max_degradation (должны быть от 0 до 1!)\n
+    min_k, max_k - минимальное и максимальное количество калия в ммоль на 100 грамм,
+    min_na, max_na - минимальное и максимальное количество натрия в ммоль на 100 грамм,
+    min_an, max_an - минимальное и максимальное количество а-аминного азота в ммоль на 100 грамм,"""
 
-    sugar_cols = size // sugar_divider
-    degradation_cols = size - sugar_cols
+    k_list = []
+    for i in range(size):
+        k_list.append(random.uniform(min_k, max_k))
+
+    na_list = []
+    for i in range(size):
+        na_list.append(random.uniform(min_na, max_na))
+
+    an_list = []
+    for i in range(size):
+        an_list.append(random.uniform(min_an, max_an))
+
     a_vector = tools.gen_vector(size, min_start_sugar, max_start_sugar)
-    sugar_matrix = tools.gen_matrix(size, sugar_cols, min_sugaring, max_sugaring)
-    degradation_matrix = tools.gen_matrix(size, degradation_cols, min_degradation, max_degradation)
-    b_matrix = tools.unite_matrix(sugar_matrix, degradation_matrix)
+    b_matrix = tools.gen_matrix(size, size-1, min_degradation, max_degradation)
     p_matrix = tools.create_p_matrix(a_vector, b_matrix)
-    return p_matrix
+    z_matrix = tools.create_z_matrix(p_matrix, k_list, na_list, an_list)
+    return z_matrix
 
 
-def hungarian_min(p_matrix):
+def hungarian_min(z_matrix):
     """Возвращает результат и список-перестановку целевой функции, поиск худшего результата с помощью венгерского алгоритма."""
-    row_indices, col_indices = linear_sum_assignment(p_matrix)
+    row_indices, col_indices = linear_sum_assignment(z_matrix)
     result = 0
     for i in range(len(row_indices)):
-        result += p_matrix[row_indices[i]][col_indices[i]]
+        result += z_matrix[row_indices[i]][col_indices[i]]
 
     for i in range(len(row_indices)):
         row_indices[col_indices[i]] = i
     return result, row_indices
 
 
-def hungarian_max(p_matrix):
+def hungarian_max(z_matrix):
     """Возвращает результат и список-перестановку целевой функции, поиск лучшего результата с помощью венгерского алгоритма."""
-    max_elem = numpy.max(p_matrix)
-    reverse_p_matrix = numpy.copy(p_matrix)
-    for i in range(len(p_matrix)):
-        for j in range(len(p_matrix)):
-            reverse_p_matrix[i][j] = -1 * p_matrix[i][j] + max_elem
+    max_elem = numpy.max(z_matrix)
+    reverse_p_matrix = numpy.copy(z_matrix)
+    for i in range(len(z_matrix)):
+        for j in range(len(z_matrix)):
+            reverse_p_matrix[i][j] = -1 * z_matrix[i][j] + max_elem
 
     row_indices, col_indices = linear_sum_assignment(reverse_p_matrix)
     result = 0
     for i in range(len(row_indices)):
-        result += p_matrix[row_indices[i]][col_indices[i]]
+        result += z_matrix[row_indices[i]][col_indices[i]]
 
     for i in range(len(row_indices)):
         row_indices[col_indices[i]] = i
     return result, row_indices
 
 
-def greedy(p_matrix: list):
+def greedy(z_matrix: list):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью жадного алгоритма."""
     result = 0
     indices = []
     took = []
 
-    for j in range(len(p_matrix)):
+    for j in range(len(z_matrix)):
         col_max = 0
         col_max_index: int
-        for i in range(len(p_matrix)):
+        for i in range(len(z_matrix)):
             is_took = False
 
             for k in range(len(took)):
@@ -73,8 +87,8 @@ def greedy(p_matrix: list):
             if is_took:
                 continue
 
-            if p_matrix[i][j] > col_max:
-                col_max = p_matrix[i][j]
+            if z_matrix[i][j] > col_max:
+                col_max = z_matrix[i][j]
                 col_max_index = i
         result += col_max
         indices.append(col_max_index)
@@ -82,16 +96,16 @@ def greedy(p_matrix: list):
     return result, indices
 
 
-def saving(p_matrix: list):
+def saving(z_matrix: list):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью бережливого алгоритма."""
     result = 0
     indices = []
     took = []
 
-    for j in range(len(p_matrix)):
+    for j in range(len(z_matrix)):
         col_min = 10
         col_min_index: int
-        for i in range(len(p_matrix)):
+        for i in range(len(z_matrix)):
             is_took = False
 
             for k in range(len(took)):
@@ -102,8 +116,8 @@ def saving(p_matrix: list):
             if is_took:
                 continue
 
-            if p_matrix[i][j] < col_min:
-                col_min = p_matrix[i][j]
+            if z_matrix[i][j] < col_min:
+                col_min = z_matrix[i][j]
                 col_min_index = i
         result += col_min
         indices.append(col_min_index)
@@ -111,7 +125,7 @@ def saving(p_matrix: list):
     return result, indices
 
 
-def saving_greedy(p_matrix: list, saving_steps: int):
+def saving_greedy(z_matrix: list, saving_steps: int):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью бережливо-жадного алгоритма.\n
     saving_steps - количество шагов в режиме сбережения, далее будет жадный режим."""
     result = 0
@@ -119,7 +133,7 @@ def saving_greedy(p_matrix: list, saving_steps: int):
     took = []
     saving_steps_completed = 0
 
-    for j in range(len(p_matrix)):
+    for j in range(len(z_matrix)):
 
         col_min = 10
         col_min_index: int
@@ -129,7 +143,7 @@ def saving_greedy(p_matrix: list, saving_steps: int):
 
         saving_mode = saving_steps_completed < saving_steps
 
-        for i in range(len(p_matrix)):
+        for i in range(len(z_matrix)):
             is_took = False
 
             for k in range(len(took)):
@@ -140,12 +154,12 @@ def saving_greedy(p_matrix: list, saving_steps: int):
             if is_took:
                 continue
 
-            if saving_mode and p_matrix[i][j] < col_min:
-                col_min = p_matrix[i][j]
+            if saving_mode and z_matrix[i][j] < col_min:
+                col_min = z_matrix[i][j]
                 col_min_index = i
 
-            if not saving_mode and p_matrix[i][j] > col_max:
-                col_max = p_matrix[i][j]
+            if not saving_mode and z_matrix[i][j] > col_max:
+                col_max = z_matrix[i][j]
                 col_max_index = i
 
         if saving_mode:
@@ -163,8 +177,7 @@ def saving_greedy(p_matrix: list, saving_steps: int):
     return result, indices
 
 
-
-def greedy_saving(p_matrix: list, greedy_steps: int):
+def greedy_saving(z_matrix: list, greedy_steps: int):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью жадно-бережливого алгоритма.\n
     greedy_steps - количество шагов в режиме жадности, далее будет бережливый режим."""
     result = 0
@@ -172,7 +185,7 @@ def greedy_saving(p_matrix: list, greedy_steps: int):
     took = []
     greedy_steps_completed = 0
 
-    for j in range(len(p_matrix)):
+    for j in range(len(z_matrix)):
 
         col_min = 10
         col_min_index: int
@@ -182,7 +195,7 @@ def greedy_saving(p_matrix: list, greedy_steps: int):
 
         greedy_mode = greedy_steps_completed < greedy_steps
 
-        for i in range(len(p_matrix)):
+        for i in range(len(z_matrix)):
             is_took = False
 
             for k in range(len(took)):
@@ -193,12 +206,12 @@ def greedy_saving(p_matrix: list, greedy_steps: int):
             if is_took:
                 continue
 
-            if not greedy_mode and p_matrix[i][j] < col_min:
-                col_min = p_matrix[i][j]
+            if not greedy_mode and z_matrix[i][j] < col_min:
+                col_min = z_matrix[i][j]
                 col_min_index = i
 
-            if greedy_mode and p_matrix[i][j] > col_max:
-                col_max = p_matrix[i][j]
+            if greedy_mode and z_matrix[i][j] > col_max:
+                col_max = z_matrix[i][j]
                 col_max_index = i
 
         if greedy_mode:

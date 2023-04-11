@@ -2,49 +2,52 @@ import sugarbeet as sb
 
 # Пример
 # Вводим стартовые значения и интервалы - получаем матрицу P
-p = sb.gen_p_matrix(size=5, sugar_divider=2,
+z = sb.gen_z_matrix(size=5,
                     min_start_sugar=0.8, max_start_sugar=1,
-                    min_sugaring=1.1, max_sugaring=1.5,
-                    min_degradation=0.7, max_degradation=0.9)
+                    min_degradation=0.7, max_degradation=0.9,
+                    min_k=4, max_k=6,
+                    min_na=2, max_na=4,
+                    min_an=2, max_an=5)
 
 # Вывод матрицы P
-for i in range(len(p)):
-    print(p[i])
+for i in range(len(z)):
+    print(z[i])
 
 # Используем сгенерированную матрицу P и передаем ее в функции расчета
 
+
 # Венгерский минимальный
-res, indices = sb.hungarian_min(p)
+res, indices = sb.hungarian_min(z)
 print("hungarian_min")
 print(res)
 print(indices)
 
 # Венгерский максимальный
-res, indices = sb.hungarian_max(p)
+res, indices = sb.hungarian_max(z)
 print("hungarian_max")
 print(res)
 print(indices)
 
 # Жадный алгоритм
-res, indices = sb.greedy(p)
+res, indices = sb.greedy(z)
 print("greedy")
 print(res)
 print(indices)
 
 # Бережливый алгоритм
-res, indices = sb.saving(p)
+res, indices = sb.saving(z)
 print("saving")
 print(res)
 print(indices)
 
 # Бережливо-жадный алгоритм
-res, indices = sb.saving_greedy(p, 1)
+res, indices = sb.saving_greedy(z, 1)
 print("saving_greedy")
 print(res)
 print(indices)
 
 # Жадно-бережливый алгоритм
-res, indices = sb.greedy_saving(p, 1)
+res, indices = sb.greedy_saving(z, 1)
 print("greedy_saving")
 print(res)
 print(indices)

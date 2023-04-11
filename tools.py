@@ -1,3 +1,4 @@
+import copy
 from random import uniform
 # Отсюда ничего брать не надо, все нужные функции находятся в sugarbeet.py
 
@@ -53,3 +54,21 @@ def create_p_matrix(a_vector, b_matrix):
             _str.append(res)
         result.append(_str)
     return result
+
+
+def create_z_matrix(p_matrix, k_list: list, na_list: list, an_list: list):
+    """Возвращает матрицу Z для решения задачи оптимизации с учетом неорганики\n
+     (Элементы в ней не могут быть больше 1).\n
+     k_list - список содержания калия в свекле (ммоль на 100 г свеклы)
+     na_list - список содержания натрия в свекле (ммоль на 100 г свеклы)
+     an_list - список содержания а-аминного азота в свекле (ммоль на 100 г свеклы)"""
+    z_matrix = p_matrix
+    n = len(z_matrix)
+
+    for i in range(n):
+        inorganic_effect = 0.01 * (2.1 + 0.0498 * k_list[i] + 0.878 * na_list[i] + 0.2345 * an_list[i] + 1.407)
+        print(i, inorganic_effect)
+        for j in range(n):
+            z_matrix[i][j] -= inorganic_effect
+
+    return z_matrix
