@@ -111,7 +111,109 @@ def saving(p_matrix: list):
     return result, indices
 
 
+def saving_greedy(p_matrix: list, saving_steps: int):
+    """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью бережливо-жадного алгоритма.\n
+    saving_steps - количество шагов в режиме сбережения, далее будет жадный режим."""
+    result = 0
+    indices = []
+    took = []
+    saving_steps_completed = 0
 
+    for j in range(len(p_matrix)):
+
+        col_min = 10
+        col_min_index: int
+
+        col_max = 0
+        col_max_index: int
+
+        saving_mode = saving_steps_completed < saving_steps
+
+        for i in range(len(p_matrix)):
+            is_took = False
+
+            for k in range(len(took)):
+                if took[k] == i:
+                    is_took = True
+                    break
+
+            if is_took:
+                continue
+
+            if saving_mode and p_matrix[i][j] < col_min:
+                col_min = p_matrix[i][j]
+                col_min_index = i
+
+            if not saving_mode and p_matrix[i][j] > col_max:
+                col_max = p_matrix[i][j]
+                col_max_index = i
+
+        if saving_mode:
+            result += col_min
+            indices.append(col_min_index)
+            took.append(col_min_index)
+
+        else:
+            result += col_max
+            indices.append(col_max_index)
+            took.append(col_max_index)
+
+        saving_steps_completed += 1
+
+    return result, indices
+
+
+
+def greedy_saving(p_matrix: list, greedy_steps: int):
+    """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью жадно-бережливого алгоритма.\n
+    greedy_steps - количество шагов в режиме жадности, далее будет бережливый режим."""
+    result = 0
+    indices = []
+    took = []
+    greedy_steps_completed = 0
+
+    for j in range(len(p_matrix)):
+
+        col_min = 10
+        col_min_index: int
+
+        col_max = 0
+        col_max_index: int
+
+        greedy_mode = greedy_steps_completed < greedy_steps
+
+        for i in range(len(p_matrix)):
+            is_took = False
+
+            for k in range(len(took)):
+                if took[k] == i:
+                    is_took = True
+                    break
+
+            if is_took:
+                continue
+
+            if not greedy_mode and p_matrix[i][j] < col_min:
+                col_min = p_matrix[i][j]
+                col_min_index = i
+
+            if greedy_mode and p_matrix[i][j] > col_max:
+                col_max = p_matrix[i][j]
+                col_max_index = i
+
+        if greedy_mode:
+            result += col_max
+            indices.append(col_max_index)
+            took.append(col_max_index)
+
+        else:
+            result += col_min
+            indices.append(col_min_index)
+            took.append(col_min_index)
+
+        greedy_steps_completed += 1
+
+    return result, indices
 
 
 

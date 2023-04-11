@@ -37,6 +37,18 @@ print("saving")
 print(res)
 print(indices)
 
+# Бережливо-жадный алгоритм
+res, indices = sb.saving_greedy(p, 1)
+print("saving_greedy")
+print(res)
+print(indices)
+
+# Жадно-бережливый алгоритм
+res, indices = sb.greedy_saving(p, 1)
+print("greedy_saving")
+print(res)
+print(indices)
+
 
 
 
