@@ -103,7 +103,7 @@ def saving(z_matrix: list):
     took = []
 
     for j in range(len(z_matrix)):
-        col_min = 10
+        col_min = 10000000
         col_min_index: int
         for i in range(len(z_matrix)):
             is_took = False
@@ -135,7 +135,7 @@ def saving_greedy(z_matrix: list, saving_steps: int):
 
     for j in range(len(z_matrix)):
 
-        col_min = 10
+        col_min = 10000000
         col_min_index: int
 
         col_max = 0

@@ -67,8 +67,9 @@ def create_z_matrix(p_matrix, k_list: list, na_list: list, an_list: list):
 
     for i in range(n):
         inorganic_effect = 0.01 * (2.1 + 0.0498 * k_list[i] + 0.878 * na_list[i] + 0.2345 * an_list[i] + 1.407)
-        print(i, inorganic_effect)
         for j in range(n):
             z_matrix[i][j] -= inorganic_effect
+            if z_matrix[i][j] < 0:
+                z_matrix[i][j] = 0
 
     return z_matrix
