@@ -1,4 +1,4 @@
-import sugarbeet as sb
+import sugar as sb
 
 # Пример
 # Вводим стартовые значения и интервалы - получаем матрицу P

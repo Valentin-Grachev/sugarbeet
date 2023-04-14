@@ -1,8 +1,8 @@
 import copy
 from random import uniform
-# Отсюда ничего брать не надо, все нужные функции находятся в sugarbeet.py
+# Отсюда ничего брать не надо, все нужные функции находятся в sugar.py
 
-def gen_vector(n: int, _min: float, _max: float):
+def create_vector(n: int, _min: float, _max: float):
     """Возвращает список размера n со случайными значениями от _min до _max."""
     result = []
     for i in range(n):

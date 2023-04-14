@@ -1,7 +1,7 @@
 import string
 from tkinter import *
 from tkinter import ttk
-import sugarbeet as sb
+import sugar as sb
 import matplotlib.pyplot as plt
 
 
@@ -164,6 +164,7 @@ def on_run_experiments_click():
     plt.plot(steps, sav_gre_avg, label="Бережливо-жадный")
     plt.plot(steps, gre_sav_avg, label="Жадно-бережливый")
 
+    plt.title("Усредненные результаты серии экспериментов")
     plt.xlabel('Этапы переработки')
     plt.ylabel('Сахара добыто')
     plt.legend()
@@ -246,7 +247,7 @@ def on_run_one_experiment_click():
     steps.clear()
     values.clear()
 
-    plt.title("Усредненные результаты группы экспериментов")
+    plt.title("Результаты одного эксперимента")
     plt.xlabel('Этапы переработки')
     plt.ylabel('Сахара добыто')
     plt.legend()

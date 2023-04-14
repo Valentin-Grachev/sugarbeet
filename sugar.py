@@ -30,7 +30,7 @@ def gen_z_matrix(size: int, min_start_sugar: float, max_start_sugar: float,
     for i in range(size):
         an_list.append(random.uniform(min_an, max_an))
 
-    a_vector = tools.gen_vector(size, min_start_sugar, max_start_sugar)
+    a_vector = tools.create_vector(size, min_start_sugar, max_start_sugar)
     b_matrix = tools.gen_matrix(size, size-1, min_degradation, max_degradation)
     p_matrix = tools.create_p_matrix(a_vector, b_matrix)
     z_matrix = tools.create_z_matrix(p_matrix, k_list, na_list, an_list)
@@ -187,7 +187,7 @@ def greedy_saving(z_matrix: list, greedy_steps: int):
 
     for j in range(len(z_matrix)):
 
-        col_min = 10
+        col_min = 1000000
         col_min_index: int
 
         col_max = 0
