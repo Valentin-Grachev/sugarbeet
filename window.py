@@ -1,6 +1,9 @@
 import string
 from tkinter import *
 from tkinter import ttk
+
+import matplotlib
+
 import sugar as sb
 import matplotlib.pyplot as plt
 
@@ -323,7 +326,7 @@ Label(frame, text="Матрица сахаристости:", bg='#fafafa', font
 
 Button(frame, text="Провести эксперимент", font="Times 14", command=on_run_one_experiment_click).place(x=700, y=30)
 
-
+matplotlib.use('TkAgg')
 root.mainloop()
 
 
