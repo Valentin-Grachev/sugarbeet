@@ -1,4 +1,4 @@
-import copy
+
 from random import uniform
 # Отсюда ничего брать не надо, все нужные функции находятся в sugar.py
 
@@ -10,32 +10,13 @@ def create_vector(n: int, _min: float, _max: float):
     return result
 
 
-def gen_matrix(_str: int, _col: int, _min: float, _max: float):
+def create_matrix(_str: int, _col: int, _min: float, _max: float):
     """Возвращает двумерный список размера (_str)x(_col) со случайными значениями от _min до _max."""
     result = []
     for i in range(_str):
         _str = []
         for j in range(_col):
             _str.append(uniform(_min, _max))
-        result.append(_str)
-    return result
-
-
-def unite_matrix(left_matrix, right_matrix):
-    """Объединяет две матрицы с одинаковым количеством строк в одну и возвращает ее."""
-    result = []
-    str_size = len(left_matrix)
-    col_size_left = len(left_matrix[0])
-    col_size_right = len(right_matrix[0])
-    for i in range(str_size):
-        _str = []
-
-        for j in range(col_size_left):
-            _str.append(left_matrix[i][j])
-
-        for j in range(col_size_right):
-            _str.append(right_matrix[i][j])
-
         result.append(_str)
     return result
 

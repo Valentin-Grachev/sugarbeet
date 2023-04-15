@@ -89,7 +89,7 @@ def on_run_experiments_click():
 
 
         # Венгерский (max)
-        value, indices = sb.hungarian_max(z_matrix)
+        value, indices = sb.hung_max(z_matrix)
         for i in range(len(indices)):
             if i == 0:
                 values.append(z_matrix[indices[i]][i])
@@ -99,7 +99,7 @@ def on_run_experiments_click():
         values.clear()
 
         # Венгерский (min)
-        value, indices = sb.hungarian_min(z_matrix)
+        value, indices = sb.hung_min(z_matrix)
         for i in range(len(indices)):
             if i == 0:
                 values.append(z_matrix[indices[i]][i])
@@ -129,7 +129,7 @@ def on_run_experiments_click():
         values.clear()
 
         # Жадно-бережливый
-        value, indices = sb.greedy_saving(z_matrix, len(z_matrix) / 2)
+        value, indices = sb.greed_sav(z_matrix, len(z_matrix) / 2)
         for i in range(len(indices)):
             if i == 0:
                 values.append(z_matrix[indices[i]][i])
@@ -139,7 +139,7 @@ def on_run_experiments_click():
         values.clear()
 
         # Бережливо-жадный
-        value, indices = sb.saving_greedy(z_matrix, len(z_matrix) / 2)
+        value, indices = sb.sav_greed(z_matrix, len(z_matrix) / 2)
         for i in range(len(indices)):
             if i == 0:
                 values.append(z_matrix[indices[i]][i])
@@ -176,7 +176,7 @@ def on_run_one_experiment_click():
     values = []
 
     # Венгерский (max)
-    value, indices = sb.hungarian_max(z_matrix)
+    value, indices = sb.hung_max(z_matrix)
     for i in range(len(indices)):
         steps.append(i + 1)
         if i == 0:
@@ -188,7 +188,7 @@ def on_run_one_experiment_click():
     values.clear()
 
     # Венгерский (min)
-    value, indices = sb.hungarian_min(z_matrix)
+    value, indices = sb.hung_min(z_matrix)
     for i in range(len(indices)):
         steps.append(i + 1)
         if i == 0:
@@ -224,7 +224,7 @@ def on_run_one_experiment_click():
     values.clear()
 
     # Жадно-бережливый
-    value, indices = sb.greedy_saving(z_matrix, len(z_matrix)/2)
+    value, indices = sb.greed_sav(z_matrix, len(z_matrix) / 2)
     for i in range(len(indices)):
         steps.append(i + 1)
         if i == 0:
@@ -236,7 +236,7 @@ def on_run_one_experiment_click():
     values.clear()
 
     # Бережливо-жадный
-    value, indices = sb.saving_greedy(z_matrix, len(z_matrix)/2)
+    value, indices = sb.sav_greed(z_matrix, len(z_matrix) / 2)
     for i in range(len(indices)):
         steps.append(i + 1)
         if i == 0:

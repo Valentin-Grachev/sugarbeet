@@ -17,13 +17,13 @@ for i in range(len(z)):
 
 
 # Венгерский минимальный
-res, indices = sb.hungarian_min(z)
+res, indices = sb.hung_min(z)
 print("hungarian_min")
 print(res)
 print(indices)
 
 # Венгерский максимальный
-res, indices = sb.hungarian_max(z)
+res, indices = sb.hung_max(z)
 print("hungarian_max")
 print(res)
 print(indices)
@@ -41,13 +41,13 @@ print(res)
 print(indices)
 
 # Бережливо-жадный алгоритм
-res, indices = sb.saving_greedy(z, 1)
+res, indices = sb.sav_greed(z, 1)
 print("saving_greedy")
 print(res)
 print(indices)
 
 # Жадно-бережливый алгоритм
-res, indices = sb.greedy_saving(z, 1)
+res, indices = sb.greed_sav(z, 1)
 print("greedy_saving")
 print(res)
 print(indices)

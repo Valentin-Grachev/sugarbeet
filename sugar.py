@@ -1,6 +1,5 @@
 import random
-
-import tools
+import utility as ut
 import numpy
 from scipy.optimize import linear_sum_assignment
 
@@ -30,14 +29,14 @@ def gen_z_matrix(size: int, min_start_sugar: float, max_start_sugar: float,
     for i in range(size):
         an_list.append(random.uniform(min_an, max_an))
 
-    a_vector = tools.create_vector(size, min_start_sugar, max_start_sugar)
-    b_matrix = tools.gen_matrix(size, size-1, min_degradation, max_degradation)
-    p_matrix = tools.create_p_matrix(a_vector, b_matrix)
-    z_matrix = tools.create_z_matrix(p_matrix, k_list, na_list, an_list)
+    a_vector = ut.create_vector(size, min_start_sugar, max_start_sugar)
+    b_matrix = ut.create_matrix(size, size - 1, min_degradation, max_degradation)
+    p_matrix = ut.create_p_matrix(a_vector, b_matrix)
+    z_matrix = ut.create_z_matrix(p_matrix, k_list, na_list, an_list)
     return z_matrix
 
 
-def hungarian_min(z_matrix):
+def hung_min(z_matrix):
     """Возвращает результат и список-перестановку целевой функции, поиск худшего результата с помощью венгерского алгоритма."""
     row_indices, col_indices = linear_sum_assignment(z_matrix)
     result = 0
@@ -49,7 +48,7 @@ def hungarian_min(z_matrix):
     return result, row_indices
 
 
-def hungarian_max(z_matrix):
+def hung_max(z_matrix):
     """Возвращает результат и список-перестановку целевой функции, поиск лучшего результата с помощью венгерского алгоритма."""
     max_elem = numpy.max(z_matrix)
     reverse_p_matrix = numpy.copy(z_matrix)
@@ -125,7 +124,7 @@ def saving(z_matrix: list):
     return result, indices
 
 
-def saving_greedy(z_matrix: list, saving_steps: int):
+def sav_greed(z_matrix: list, saving_steps: int):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью бережливо-жадного алгоритма.\n
     saving_steps - количество шагов в режиме сбережения, далее будет жадный режим."""
     result = 0
@@ -177,7 +176,7 @@ def saving_greedy(z_matrix: list, saving_steps: int):
     return result, indices
 
 
-def greedy_saving(z_matrix: list, greedy_steps: int):
+def greed_sav(z_matrix: list, greedy_steps: int):
     """Возвращает результат и список-перестановку целевой функции, поиск результата с помощью жадно-бережливого алгоритма.\n
     greedy_steps - количество шагов в режиме жадности, далее будет бережливый режим."""
     result = 0
