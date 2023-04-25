@@ -1,25 +1,28 @@
-import tools
+import os.path
+
+import gens
 import numpy
+import file_manager as fm
 from scipy.optimize import linear_sum_assignment
 
 
-def gen_p_matrix(size: int, sugar_divider: int,
-                 min_start_sugar: float, max_start_sugar: float,
-                 min_sugaring: float, max_sugaring: float,
-                 min_degradation: float, max_degradation: float):
+def get_p_matrix_sugar(size: int, has_breaking: bool, file_writing: bool,
+                       min_start_sugar: float, max_start_sugar: float,
+                       min_degradation: float, max_degradation: float):
     """Возвращает матрицу P для решения задачи оптимизации, используя заданные интервалы разброса начальных условий.\n
-    size - размер матрицы P, sugar_divider - знаменатель дроби дозаривания (если = 2, то дозаривание будет 1/2 и т.п)\n
+    size - размер матрицы P, has_breaking - включить/отключить поломки оборудования, file_writing - включить вывод в файл\n
     min_start_sugar, max_start_sugar - интервал разброса стартовых значений сахаристости (должны быть от 0 до 1!)\n
-    min_sugaring, max_sugaring - интервал разброса значений увеличения сахаристости на этапах дозаривания (должны быть больше 1!)
     min_degradation, max_degradation - коэффициенты деградации будут от min_degradation до max_degradation (должны быть от 0 до 1!)."""
 
-    sugar_cols = size // sugar_divider
-    degradation_cols = size - sugar_cols
-    a_vector = tools.gen_vector(size, min_start_sugar, max_start_sugar)
-    sugar_matrix = tools.gen_matrix(size, sugar_cols, min_sugaring, max_sugaring)
-    degradation_matrix = tools.gen_matrix(size, degradation_cols, min_degradation, max_degradation)
-    b_matrix = tools.unite_matrix(sugar_matrix, degradation_matrix)
-    p_matrix = tools.create_p_matrix(a_vector, b_matrix)
+    a_vector = gens.rand_vector(size, min_start_sugar, max_start_sugar)
+    b_matrix = gens.rand_matrix(size, size + 1, min_degradation, max_degradation)
+    p_matrix = gens.get_p_matrix(a_vector, b_matrix, has_breaking)
+
+    if file_writing:
+        fm.create()
+        fm.write_start_conditions(a_vector, b_matrix)
+        fm.write_sugar_matrix(p_matrix)
+
     return p_matrix
 
 
