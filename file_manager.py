@@ -7,10 +7,10 @@ def create():
     global filename
 
     file_number = 1
-    while os.path.exists("test_" + str(file_number)):
+    while os.path.exists("test_" + str(file_number) + ".txt"):
         file_number += 1
 
-    filename = "test_" + str(file_number)
+    filename = "test_" + str(file_number) + ".txt"
 
     file = open(file=filename, mode='w', encoding='utf-8')
     file.close()
